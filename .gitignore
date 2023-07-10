@@ -1,0 +1,11 @@
+# VS Code setting
+.vscode
+
+# MacOS
+.DS_Store
+
+# Byte-compiled files
+__pycache__/
+
+# Jupyter Notebook
+.ipynb_checkpoints
