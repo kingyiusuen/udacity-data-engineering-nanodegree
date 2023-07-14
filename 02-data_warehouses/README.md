@@ -57,3 +57,27 @@ To optimize queries on song play analysis, a star schema is used in the data war
 - `etl.py`: Load data from S3 into staging tables on Redshift and then process that data into your analytics tables on Redshift
 - `sql_queries.py`: SQL statements which will be imported into the two other files above
 - `dwh.cfg`: Configuration file
+
+## Setup
+
+1. Create an IAM role
+    - Choose AWS service as trusted entity type
+    - Choose Redshift - Customizable as use case
+    - Attach `AmazonS3ReadOnlyAccess` policy
+    - Use `dwhRole` as role name
+2. Create a security group for Redshift
+    - Use `redshift_security_group` as security group name
+    - Choose the default VPC
+    - Add an inbound rule (type: custom TCP rule, protocol: TCP, port: 5439, source type: custom, source: 0.0.0.0/0)
+3. Create an IAM User for Redshift
+    - Attach two permission policies (`AmazonRedshiftFullAccess` and `AmazonS3ReadOnlyAccess`)
+    - Save the Access key and Security access key
+4. Create a Redshift Cluster
+    - Attach `dwhRole` role
+    - Expand the Network and security section
+        - Choose the default VPN
+        - Add `redshift_security_group` as one of the security groups
+        - Enable public accessibility
+5. Modify `dwh.cfg`
+
+NOTE: Make sure to delete the cluster each time finish working to avoid large, unexpected costs

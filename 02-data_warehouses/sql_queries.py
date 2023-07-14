@@ -130,7 +130,7 @@ staging_songs_copy = ("""
 songplay_table_insert = ("""
     INSERT INTO songplays (start_time, user_id, level, song_id, artist_id, session_id, location, user_agent)
     SELECT  
-        DISTINCT e.ts AS start_time, 
+        DISTINCT TIMESTAMP 'epoch' + e.ts/1000 * INTERVAL '1 second' AS start_time,
         e.userId AS user_id, 
         e.level AS level, 
         s.song_id AS song_id, 
@@ -183,14 +183,15 @@ artist_table_insert = ("""
 time_table_insert = ("""
     INSERT INTO time (start_time, hour, day, week, month, year, weekday)
     SELECT  
-        DISTINCT start_time,
+        DISTINCT TIMESTAMP 'epoch' + ts/1000 * INTERVAL '1 second' AS start_time,
         EXTRACT(hour FROM start_time) AS hour,
         EXTRACT(day FROM start_time) AS day,
         EXTRACT(week FROM start_time) AS week,
         EXTRACT(month FROM start_time) AS month,
         EXTRACT(year FROM start_time) AS year,
         EXTRACT(dayofweek FROM start_time) AS weekday
-    FROM songplays
+    FROM staging_events
+    WHERE ts IS NOT NULL
 """)
 
 # QUERY LISTS
